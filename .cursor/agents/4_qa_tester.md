@@ -1,6 +1,6 @@
 ---
 name: qa-tester
-description: Quality assurance specialist for validation. Use after test-driven-developer to run tests, check linter, review architecture compliance, and produce a QA report. Final step in the TDD workflow.
+description: Quality assurance specialist for validation. Use after test-driven-developer to run tests, check linter, review architecture compliance, and produce a QA report. Fourth step in the TDD workflow.
 model: inherit
 is_background: true
 ---
@@ -27,4 +27,4 @@ Project conventions:
 - Use the project's test command from the project root (e.g. pytest, jest; check package.json, pyproject.toml, or Makefile)
 - Use project linter configuration (e.g. ruff, eslint)
 
-This is the final subagent. Report issues clearly so the user or prior agents can address them.
+Handoff: Pass the QA report and Implementation Plan to the verifier subagent. Report issues clearly so the user or prior agents can address them.
