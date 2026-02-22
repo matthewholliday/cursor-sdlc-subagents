@@ -53,8 +53,8 @@ Do **not** start the TDD pipeline until both of these are done:
 
 6. **test-plan-generator** (run only after verifier reports PASS)  
    - **subagent_type**: `test-plan-generator`  
-   - **Prompt**: Include the user's original request, the Implementation Plan, the Verifier Report (PASS), the QA report, and the list of files changed from the test-driven-developer. Ask to produce the Manual QA Test Plan document and write it to a file in the repo (e.g. docs/manual-qa-test-plan.md).  
-   - **Output**: Path to the generated test plan file and optional one-line summary.
+   - **Prompt**: Include the user's original request, the Implementation Plan, the Verifier Report (PASS), the QA report, and the list of files changed from the test-driven-developer. Ask to produce the Manual QA Test Plan document, write it to a file in the repo (e.g. docs/manual-qa-test-plan.md), and return the PR description section (test steps) for appending to the PR body.  
+   - **Output**: Path to the generated test plan file, one-line summary, and the **PR description section** (markdown block with manual QA test steps) to append to the PR body.
 
 ## Re-initiation
 
@@ -64,8 +64,8 @@ Do **not** start the TDD pipeline until both of these are done:
 ## After verifier PASS: create pull request
 
 - When the verifier reports **PASS**:
-  1. Run **test-plan-generator** (step 6) with the user's request, Implementation Plan, Verifier Report, QA report, and list of files changed. Wait for the path to the manual QA test plan file.
-  2. Create a pull request via the **user-github** MCP server: base branch `main`, head branch = current feature branch. Set the PR title (e.g. from the issue title) and body. In the PR body, include `Fixes #<issue_number>` (or `Closes #<issue_number>`) so GitHub can auto-close the issue when the PR is merged. Mention the manual QA test plan (e.g. "Manual QA test plan: `docs/manual-qa-test-plan.md`") so testers can find it.
+  1. Run **test-plan-generator** (step 6) with the user's request, Implementation Plan, Verifier Report, QA report, and list of files changed. Wait for the path to the manual QA test plan file and the **PR description section** (test steps) to append to the PR body.
+  2. Create a pull request via the **user-github** MCP server: base branch `main`, head branch = current feature branch. Set the PR title (e.g. from the issue title) and body. In the PR body: include `Fixes #<issue_number>` (or `Closes #<issue_number>`), mention the full test plan file (e.g. "Manual QA test plan: `docs/manual-qa-test-plan.md`"), and **append the test steps section** returned by the test-plan-generator (the "PR description section" block) so the PR description contains the manual QA test steps inline for reviewers and testers.
   3. Inform the user that the PR is ready and that they should merge it manually.
 
 ## Conventions

@@ -20,7 +20,10 @@ When invoked:
    - **Setup/teardown** (optional): Any one-time setup or cleanup; link to project docs if relevant.
 
 3. Write the document to a file in the repo. Use **docs/manual-qa-test-plan.md** if a `docs/` folder exists or is appropriate; otherwise use **MANUAL_QA_TEST_PLAN.md** at the repo root. Create the `docs/` directory if needed.
-4. Return the path to the written file and a one-line summary of the test plan.
+4. Return all of the following so the manager can create the PR:
+   - **Path** to the written test plan file.
+   - **One-line summary** of the test plan.
+   - **PR description section**: A markdown block titled `## Manual QA test steps` containing the numbered test steps (and, if brief, the expected results for each step). Format this so it can be appended directly into the PR body—clear numbered list, no file paths or meta-commentary. The manager will append this section to the PR description.
 
 Format: Markdown, clear headings and numbered steps. No branch or git operations.
 
