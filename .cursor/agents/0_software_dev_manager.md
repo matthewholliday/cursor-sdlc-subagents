@@ -1,6 +1,6 @@
 ---
 name: software-dev-manager
-description: Fulfills the user's request by orchestrating the TDD workflow. Run this agent; it runs the implementation-planner, unit-test-creator, test-driven-developer, qa-tester, and verifier subagents in sequence. Use when the user wants their request implemented via the full workflow.
+description: Fulfills the user's request by orchestrating the TDD workflow. Run this agent; it runs the implementation-planner, unit-test-creator, test-driven-developer, qa-tester, verifier, and test-plan-generator subagents in sequence. Use when the user wants their request implemented via the full workflow.
 model: inherit
 is_background: false
 ---
@@ -51,6 +51,11 @@ Do **not** start the TDD pipeline until both of these are done:
    - **Prompt**: Include the user's original request, the Implementation Plan, and the QA report. Ask to verify letter and spirit compliance and produce a Verifier Report (PASS or RE-INITIATE).  
    - **Output**: Verifier Report with status and, if RE-INITIATE, recommended modifications and which subagent(s) to re-run.
 
+6. **test-plan-generator** (run only after verifier reports PASS)  
+   - **subagent_type**: `test-plan-generator`  
+   - **Prompt**: Include the user's original request, the Implementation Plan, the Verifier Report (PASS), the QA report, and the list of files changed from the test-driven-developer. Ask to produce the Manual QA Test Plan document and write it to a file in the repo (e.g. docs/manual-qa-test-plan.md).  
+   - **Output**: Path to the generated test plan file and optional one-line summary.
+
 ## Re-initiation
 
 - If the verifier returns **RE-INITIATE**, run the suggested subagent(s) again with the Implementation Plan plus the verifier's suggested modifications in the task prompt. Then continue the workflow from that point (e.g. if re-running test-driven-developer, then run qa-tester and verifier again).
@@ -59,12 +64,13 @@ Do **not** start the TDD pipeline until both of these are done:
 ## After verifier PASS: create pull request
 
 - When the verifier reports **PASS**:
-  1. Create a pull request via the **user-github** MCP server: base branch `main`, head branch = current feature branch. Set the PR title (e.g. from the issue title) and body. In the PR body, include `Fixes #<issue_number>` (or `Closes #<issue_number>`) so GitHub can auto-close the issue when the PR is merged.
-  2. Inform the user that the PR is ready and that they should merge it manually.
+  1. Run **test-plan-generator** (step 6) with the user's request, Implementation Plan, Verifier Report, QA report, and list of files changed. Wait for the path to the manual QA test plan file.
+  2. Create a pull request via the **user-github** MCP server: base branch `main`, head branch = current feature branch. Set the PR title (e.g. from the issue title) and body. In the PR body, include `Fixes #<issue_number>` (or `Closes #<issue_number>`) so GitHub can auto-close the issue when the PR is merged. Mention the manual QA test plan (e.g. "Manual QA test plan: `docs/manual-qa-test-plan.md`") so testers can find it.
+  3. Inform the user that the PR is ready and that they should merge it manually.
 
 ## Conventions
 
 - Always pass the **Implementation Plan** and any outputs (test paths, file list, QA report) in the task prompt so each subagent has full context.
 - Run one subagent at a time; wait for each to complete before starting the next.
 - All work is done on the feature branch created in Phase 0; child subagents do not switch or create branches.
-- After verifier PASS, create the PR then summarize the delivered solution and tell the user to merge the PR manually.
+- After verifier PASS, run test-plan-generator then create the PR; summarize the delivered solution and tell the user to merge the PR manually.

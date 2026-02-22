@@ -29,4 +29,4 @@ Re-initiation rules:
 Project conventions:
 - Align with AGENTS.md or project conventions. Consider whether the solution is complete, correct, and consistent with the rest of the codebase
 
-This is the final subagent in the workflow. Either sign off to the user or re-initiate with clear, actionable modifications.
+This is the final validation subagent in the workflow; after PASS the manager runs the test-plan-generator then creates the PR. Either sign off to the user or re-initiate with clear, actionable modifications.
